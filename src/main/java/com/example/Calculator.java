@@ -3,6 +3,10 @@ package com.example;
 public class Calculator {
 
     public int calculate(int a, int b, String operation) {
+        if (operation == null) {
+            throw new IllegalArgumentException("Operation cannot be null");
+        }
+
         switch (operation) {
             case "add":
                 return add(a, b);
@@ -41,6 +45,9 @@ public class Calculator {
     }
 
     private int modulo(int a, int b) {
+        if (b == 0) {
+            throw new ArithmeticException("Modulo by zero");
+        }
         return a % b;
     }
 

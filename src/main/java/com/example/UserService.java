@@ -20,7 +20,6 @@ public class UserService {
     }
 
     public void findUser(String username) {
-        // Fix Issue 1: Don't use SELECT *, specify columns instead
         String query = "SELECT id, name, email FROM users WHERE name = ?";
 
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, password);
@@ -30,12 +29,13 @@ public class UserService {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    // Fix Issue 2: Use Logger instead of System.out
-                    LOGGER.info(rs.getString("name"));
+                    String name = rs.getString("name");
+                    if (name != null) {
+                        LOGGER.info(name);
+                    }
                 }
             }
         } catch (SQLException e) {
-            // Fix Issue 3: Already using specific SQLException
             LOGGER.log(Level.SEVERE, "Database error while finding user", e);
         }
     }
