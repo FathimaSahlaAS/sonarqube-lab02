@@ -1,33 +1,50 @@
-package main.java.com.example;
+package com.example;
 
 public class Calculator {
 
     public int calculate(int a, int b, String operation) {
         switch (operation) {
             case "add":
-                return a + b;
+                return add(a, b);
             case "sub":
-                return a - b;
+                return subtract(a, b);
             case "mul":
-                return a * b;
+                return multiply(a, b);
             case "div":
-                return (b != 0) ? a / b : 0;
+                return divide(a, b);
             case "mod":
-                return a % b;
+                return modulo(a, b);
             case "pow":
-                return (int) Math.pow(a, b);
+                return power(a, b);
             default:
-                return 0;
+                throw new IllegalArgumentException("Unknown operation: " + operation);
         }
     }
 
-    // Code Duplication (students must remove)
-    public int addNumbers(int x, int y) {
-        return x + y;
-    }
-
-    public int sumValues(int a, int b) {
+    private int add(int a, int b) {
         return a + b;
     }
 
+    private int subtract(int a, int b) {
+        return a - b;
+    }
+
+    private int multiply(int a, int b) {
+        return a * b;
+    }
+
+    private int divide(int a, int b) {
+        if (b == 0) {
+            throw new ArithmeticException("Division by zero");
+        }
+        return a / b;
+    }
+
+    private int modulo(int a, int b) {
+        return a % b;
+    }
+
+    private int power(int a, int b) {
+        return (int) Math.pow(a, b);
+    }
 }

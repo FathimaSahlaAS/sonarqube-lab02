@@ -1,40 +1,43 @@
-package main.java.com.example;
+package com.example;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.Statement;
+import java.sql.ResultSet;
 
 public class UserService {
 
-    // SECURITY ISSUE: Hardcoded credentials
-    private String password = "admin123";
+    private static final String DB_URL = "jdbc:mysql://localhost/db";
+    private static final String DB_USER = "root";
+    private final String password;
 
-    // VULNERABILITY: SQL Injection
-    public void findUser(String username) throws Exception {
-
-        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/db",
-                "root", password);
-
-        Statement st = conn.createStatement();
-
-        String query = "SELECT * FROM users WHERE name = '" + username + "'";
-
-        st.executeQuery(query);
+    public UserService() {
+        this.password = "secret";
     }
 
-    // SMELL: Unused method
-    public void notUsed() {
-        System.out.println("I am never called");
+    public void findUser(String username) throws Exception {
+        String query = "SELECT * FROM users WHERE name = ?";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, password);
+                PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, username);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    System.out.println(rs.getString("name"));
+                }
+            }
+        }
     }
 
     public void deleteUser(String username) throws Exception {
-        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/db", "root", password);
         String query = "DELETE FROM users WHERE name = ?";
-        PreparedStatement pst = conn.prepareStatement(query);
-        pst.setString(1, username);
-        pst.execute();
-        pst.close();
-        conn.close();
+
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, password);
+                PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, username);
+            pstmt.execute();
+        }
     }
 }
